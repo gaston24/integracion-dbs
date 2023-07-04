@@ -1,0 +1,22 @@
+[
+    {
+        "c_postal":1000,
+        "localidad":"C.A.B.A",
+        "desc_partido":"CAPITAL FEDERAL",
+        "provincia" : "CAPITAL FEDERAL",
+        "zona" : "CAPITAL FEDERAL",
+        "latitud" : "-34,59972222",
+        "longitud" : "-58,38194444"
+    },
+    
+    {
+        "c_postal":1000,
+        "localidad":"C.A.B.A",
+        "desc_partido":"CAPITAL FEDERAL",
+        "provincia" : "CAPITAL FEDERAL",
+        "zona" : "CAPITAL FEDERAL",
+        "latitud" : "-34,59972222",
+        "longitud" : "-58,38194444"
+    }
+
+]
