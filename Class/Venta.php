@@ -37,7 +37,7 @@ class Venta
     {
         try {
 
-            $sql = "exec [LAKERBIS].locales_lakers.dbo.RO_SP_MAILS_VENTA_SUCURSALES '2023-07-01', '2023-07-02'";
+            $sql = " exec [LAKERBIS].locales_lakers.dbo.$sp '2023-07-01', '2023-07-02' ";
 
             $stmt = sqlsrv_query($this->cid_central, $sql);
 
@@ -45,10 +45,13 @@ class Venta
 
             $v = [];
 
-            while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                // echo json_encode($row); 
-                $v[] = $row;
-            }
+            do {
+                
+                while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                    $v[] = $row;
+                }
+
+            } while (sqlsrv_next_result($stmt));
 
             return $v;
 
