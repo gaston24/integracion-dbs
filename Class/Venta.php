@@ -22,18 +22,42 @@ class Venta
     private $banco;
     private $rango_etario;
     private $categoria;
+    private $cid_central;
 
     function __construct(){
 
-        require_once __DIR__.'/../../class/conexion.php';
+        require_once 'Conexion.php';
         $cid = new Conexion();
         $this->cid_central = $cid->conectarSql('central');
-        $this->cid_central = $cid->conectarMongoDb();
-        
+
        
     } 
 
-    
+    public function execSpSql ($sp)
+    {
+        try {
+
+            $sql = "exec [LAKERBIS].locales_lakers.dbo.RO_SP_MAILS_VENTA_SUCURSALES '2023-07-01', '2023-07-02'";
+
+            $stmt = sqlsrv_query($this->cid_central, $sql);
+
+            $next_result = sqlsrv_next_result($stmt);
+
+            $v = [];
+
+            while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                // echo json_encode($row); 
+                $v[] = $row;
+            }
+
+            return $v;
+
+        
+        } catch (Exception $e) {
+            echo 'Excepción capturada: ',  $e->getMessage(), "\n";
+        }
+    }
+        
 
 }
 

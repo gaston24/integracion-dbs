@@ -13,6 +13,14 @@ function showSql($table)
 
 }
 
+function execSpSql($sp) 
+{
+    $ventas = new VentasRepository();
+    $result = $ventas->execSpSql($sp);
+    return $result;
+    
+}
+
 function showMongo($collection) 
 {
 
@@ -63,15 +71,16 @@ function pasarSqlAmongoDb($table,$collectionName)
         
         $ventas = new VentasRepository();
 
-        $result = $ventas->createCollection($collectionName);
+        // $result = $ventas->createCollection($collectionName);
 
         $result = $ventas->showSql($table);
         
         foreach ($result as $key => $res) {
-
+            
             $document = $res;
+            var_dump($document);
 
-            $ventas->insertOne($collectionName,$document);
+            // $ventas->insertOne($collectionName,$document);
 
         }
 

@@ -44,6 +44,38 @@ class VentasRepository
 
     }
 
+    public function execSpSql ($sp)
+    {
+        try{            
+
+            require_once 'conexion.php';
+            $cidE = new Conexion();
+            $conn= $cidE->conectarSql('central');
+            
+            $sql = "EXEC [LAKERBIS].locales_lakers.dbo.RO_SP_MAILS_VENTA_SUCURSALES '01/07/2023', '04/07/2023'";
+            
+            // ini_set('max_execution_time', 500);
+            
+            $stmt = sqlsrv_query($conn, $sql);
+  
+            $v = [];
+            
+            var_dump(sqlsrv_fetch_array($stmt));
+            die();
+            while ($row = sqlsrv_fetch_array($stmt,SQLSRV_FETCH_ASSOC)) {
+
+                $v[] = $row;
+
+            }
+
+            return $v;
+        
+        } catch (\Throwable $th){
+            print_r($th);
+        }
+
+    }
+
     public function showMongo($collection)
     {
 
