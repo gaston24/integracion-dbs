@@ -33,6 +33,7 @@ class Venta
        
     } 
 
+    
     public function execSpSql ($sp)
     {
         try {
