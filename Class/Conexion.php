@@ -66,13 +66,13 @@ class Conexion{
     public function conectarMongoDb () {
         
         try {
-
             $mongoClient = new MongoDB\Client($this->host_mongo);
-
+    
             $mongoDb = $mongoClient->selectDatabase($this->database_mongo);
-
+    
             return $mongoDb;
         
+
         } catch (\Throwable $th) {
 
             echo $e->getMessage();

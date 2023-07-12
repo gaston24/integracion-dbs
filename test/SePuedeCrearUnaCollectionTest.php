@@ -1,46 +1,36 @@
-<?php 
+<?php
+
+require_once "Class/VentasRepository.php";  
 use PHPUnit\Framework\TestCase;
-require_once "Class/VentasRepository.php"; 
-
-
-interface MongoDBClientInterface {
-    public function createCollection($collectionName);
-}
-
-interface MongoDBCollectionInterface {
-    // Agrega aquí los métodos necesarios para tu test
-}
+use MongoDB\Client;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 class SePuedeCrearUnaCollectionTest extends TestCase
 {
+    use MockeryPHPUnitIntegration;
+
+ 
     public function testCreateCollection()
     {
-        // Crear una instancia de VentasRepository
-        $ventasRepo = new VentasRepository();
+        // Arrange
+        $mockCidMongo = $this->getMockBuilder('VentasRepository') 
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        // Mockear el objeto de conexión a MongoDB
-        $mongoMock = $this->createMock(MongoDBClientInterface::class);
-
-        // Configurar el mock para que devuelva una colección simulada
-        $mongoCollectionMock = $this->createMock(MongoDBCollectionInterface::class);
-        $mongoMock->expects($this->once())
+        $mockCidMongo->expects($this->once())
             ->method('createCollection')
-            ->with($this->equalTo('test_collection'))
-            ->willReturn($mongoCollectionMock);
+            ->willReturn(true);
 
-        // Asignar el objeto mock al objeto VentasRepository
-        $reflection = new ReflectionClass(VentasRepository::class);
-        $property = $reflection->getProperty('cid_mongo');
-        $property->setAccessible(true);
-        $property->setValue($ventasRepo, $mongoMock);
+        $yourClass = new VentasRepository($mockCidMongo);
 
-        // Probar la función createCollection
-        $collectionName = 'test_collection';
-        $result = $ventasRepo->createCollection($collectionName);
+        // Act
+        $result = $yourClass->createCollection('testCollection');
 
-        // Verificar que se haya llamado al método createCollection en el mock
+        // Assert
         $this->assertTrue($result);
     }
+
 }
+
 
 ?>

@@ -3,6 +3,8 @@
         "mongodb/mongodb": "^1.8"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.6"
+        "phpunit/phpunit": "^9.6",
+        "fakerphp/faker": "^1.23",
+        "mockery/mockery": "^1.6"
     }
 }

@@ -1,11 +1,15 @@
 <?php
 
+require_once "Class/VentasRepository.php"; 
 use PHPUnit\Framework\TestCase;
 use MongoDB\Client;
-require "Class/VentasRepository.php"; 
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use Mockery as m;
 
-class MyTest extends TestCase
+class SePuedeTraerRegistrosTest extends TestCase
 {
+    use MockeryPHPUnitIntegration;
+
     public function testShowSql()
     {
         // Preparar datos de prueba
@@ -39,10 +43,5 @@ class MyTest extends TestCase
         $this->assertIsArray($result); // Verifica que el resultado sea un arreglo
         $this->assertNotEmpty($result); // Verifica que el resultado no esté vacío
     }
-
-
-
 }
-
-
 ?>

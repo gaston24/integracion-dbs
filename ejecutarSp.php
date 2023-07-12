@@ -1,6 +1,13 @@
 <?php 
-require_once 'Class/Venta.php';
-$venta = new Venta();
-$a = $venta->execSpSql("RO_SP_MAILS_VENTA_SUCURSALES");
-var_dump($a);
+require_once 'Controller/VentasController.php';
+require_once 'Class/VentasRepository.php';
+require_once 'vendor/autoload.php';
+// ejecutarSp();
+
+$mongo = new VentasRepository();
+ejecutarSp();
+// $hola = ["acasa"=>"asdas"];
+// $mongo->insertOne("abc",$hola);
+
+
 ?>

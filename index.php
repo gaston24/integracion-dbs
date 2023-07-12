@@ -14,7 +14,7 @@ require_once 'Class\Ubicacion.php';
 // insertDesdeSql();
 // Conexión a MongoDB
 // crearCollectionYinsertar('local','paulo1');
-
+$result = showMongo('Ventas');
 
 
 
@@ -28,14 +28,20 @@ require_once 'Class\Ubicacion.php';
 
 // $ubicacion = new Ubicacion();
 
+// $result = $ubicacion->traerUbicaciones();
+// var_dump($result);
 
 // foreach ($objetoJson as $key => $value) {
-    //         // var_dump($value);
-    //     $ubicacion->insertOne("Ubicacion", $value); 
+//             // var_dump($value);
+//         $ubicacion->insertOne("Ubicacion", $value); 
     
-    // }
-    $result = execSpSql("RO_SP_VENTAS_VS_COBRANZA_TOTALES");
-    // var_dump($todosLosElementosSql);
-var_dump($result);
-
+//     }
+//     $result = execSpSql("RO_SP_VENTAS_VS_COBRANZA_TOTALES");
+//     var_dump($todosLosElementosSql);
+// var_dump($result);
+foreach ($result as $key => $value) {
+    if($value['UBICACION'] != ""){
+        var_dump($value);
+}
+}
 ?>

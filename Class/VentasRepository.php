@@ -5,12 +5,12 @@ class VentasRepository
 {   
     private $cid_mongo = "";
     private $mongo;
-    function __construct()
+    function __construct( $cidParaMongo = null)
     {
         require_once 'conexion.php';
         $cid = new Conexion();
         $this->cid_central = $cid->conectarSql('central');
-        $this->cid_mongo = $cid->conectarMongoDb();
+        $this->cid_mongo = (isset($cidParaMongo)) ? $cidParaMongo : $cid->conectarMongoDb();
      
 
     } 
@@ -60,8 +60,7 @@ class VentasRepository
   
             $v = [];
             
-            var_dump(sqlsrv_fetch_array($stmt));
-            die();
+
             while ($row = sqlsrv_fetch_array($stmt,SQLSRV_FETCH_ASSOC)) {
 
                 $v[] = $row;
@@ -151,42 +150,68 @@ class VentasRepository
 
     }
     
-    public function deleteOne($collection,$filter,$value) 
+    public function deleteOne(string $collection, string $filter, $value): bool
     {
-
-        try {
-
-            $mongoCollection = $this->cid_mongo->selectCollection($collection);
-
-            $mongoCollection->deleteOne([$filter => $value]);
-
-            return true;
-
-        } catch (\Throwable $th) {
-
-            throw $th;
-            
-        }
-
+        $db = $this->mongoClient->selectDatabase('local'); // Reemplaza 'nombre_base_de_datos' por el nombre real de tu base de datos
+        $mongoCollection = $db->selectCollection($collection);
+        
+        $result = $mongoCollection->deleteOne([$filter => $value]);
+        
+        return $result->getDeletedCount() > 0;
     }
 
-    public function insertOne ($collection, $document) 
+    public function insertOne($collection, $document)
     {
-
         try {
 
             $mongoCollection = $this->cid_mongo->selectCollection($collection);
+            
+            $dni = $document['DNI'] ;
+            
+            $filter = [  "DNI" => "$dni" ]; // Filtro vacío para obtener todos los documentos
 
-            $mongoCollection->insertOne($document);
+            $options = [
+            'projection' => []
+            ]; // Opciones adicionales, como ordenar los resultados, limitarlos, etc.
+    
+            $result = $mongoCollection->find($filter, $options);
 
-            return true;
+            $newArray = [];
+            foreach ($result as $x => $document) {
+    
+            $documentArray = $document->getArrayCopy();
+    
+            // Acceder al campo _id
+            $id = (string) $documentArray['_id'];
+    
+            $newArray[$x]['ID'] = $id;
+            // Acceder a los demás campos
+            $keys = array_keys($documentArray);
+    
+            foreach ($keys as $key) {
+                // Saltar el campo _id
+                if ($key === '_id') {
+                    continue;
+                }
+                $newArray[$x][$key] = $documentArray[$key];
+    
+            }
+    
+            }
+            
+            if (count($newArray) == 0) {
+
+                $document['FECHA'] = (new MongoDB\BSON\UTCDateTime(strtotime($document['FECHA']->format('Y-m-d')) * 1000));
+    
+                $mongoCollection->insertOne($document);
+                return true;
+            };
+
+
 
         } catch (\Throwable $th) {
-
             throw $th;
-            
         }
-
     }
 
 }

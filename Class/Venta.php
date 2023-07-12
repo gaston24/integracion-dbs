@@ -29,12 +29,11 @@ class Venta
         require_once 'Conexion.php';
         $cid = new Conexion();
         $this->cid_central = $cid->conectarSql('central');
-
        
     } 
 
     
-    public function execSpSql ($sp)
+    public function execDoSpSql ($sp)
     {
         try {
 

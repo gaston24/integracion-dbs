@@ -1,5 +1,9 @@
 <?php 
 require_once 'Class/VentasRepository.php';
+require_once 'Class/Venta.php';
+require_once 'Class/Ubicacion.php';
+
+
 
 function showSql($table) 
 {
@@ -89,6 +93,52 @@ function pasarSqlAmongoDb($table,$collectionName)
     } catch (\Throwable $th) {
 
         throw $th;
+
+    }
+
+
+}
+
+function ejecutarSp(){
+
+    $venta = new Venta();
+    $ventasRepository = new VentasRepository();
+    $ubicacion = new Ubicacion();
+  
+    $ubicaciones = $ubicacion->traerUbicaciones();
+
+    $data = $venta->execDoSpSql("RO_SP_MAILS_VENTA_SUCURSALES");
+    $ventasRepository->createCollection("Ventas");
+
+    foreach ($data as $key => &$venta) {
+        
+        $venta['UBICACION'] = "";
+        foreach ($ubicaciones as $k => $ubicacion) {
+        
+            
+            if($venta['C_POSTAL'] == $ubicacion['c_postal']){
+
+                $venta['UBICACION'] = json_encode($ubicacion);
+                break ;
+            }
+            
+            if($venta['LOCALIDAD'] == $ubicacion['localidad'] || $venta['LOCALIDAD'] == $ubicacion['desc_partido']){
+
+                $venta['UBICACION'] = json_encode($ubicacion);
+                break ;
+            }
+
+            if($venta['LOCALIDAD_SUCURSAL'] == $ubicacion['localidad'] || $venta['LOCALIDAD_SUCURSAL'] == $ubicacion['desc_partido']){
+
+                $venta['UBICACION'] = json_encode($ubicacion);
+                break ;
+            }
+
+        
+            
+        }
+
+        $ventasRepository->insertOne("Ventas",$venta);
 
     }
 
