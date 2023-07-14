@@ -99,7 +99,7 @@ function pasarSqlAmongoDb($table,$collectionName)
 
 }
 
-function ejecutarSp(){
+function traerDatosVentasSql(){
 
     $venta = new Venta();
     $ventasRepository = new VentasRepository();
@@ -107,10 +107,90 @@ function ejecutarSp(){
   
     $ubicaciones = $ubicacion->traerUbicaciones();
 
-    $data = $venta->execDoSpSql("RO_SP_MAILS_VENTA_SUCURSALES");
+    $arrayFc = [];
+    
+    $arrayVentas = $venta->execDoSpSql("RO_SP_MAILS_VENTA_SUCURSALES");
+
+    foreach ($arrayVentas as $key => $value) {
+        if( !in_array($value['N_COMP'], $arrayFc) ){
+            $arrayFc[] = $value['N_COMP'];
+        }
+    }
+
+
+    $arrayVentas2 = [];
+    $arrayVentasTemp = [];
+
+    $arrayArt = [];
+
+
+    foreach ($arrayVentas as $k => $v) {
+
+        if($v['CANTIDAD'] > 0){
+
+            $arrayArt[][$v['N_COMP']] = array(
+
+                "COD_ARTICU" => $v['COD_ARTICU'],
+                "DESC_CTA_ARTICULO" => $v['DESC_CTA_ARTICULO'],
+                "DESC_PROMOCION_TARJETA" => $v['DESC_PROMOCION_TARJETA'],
+                "CANTIDAD" => $v['CANTIDAD'],
+                "PRECIO" => $v['IMP'],
+                "RUBRO" => $v['RUBRO'],
+                "CATEGORIA" => $v['CATEGORIA'],
+
+            );
+
+        }
+        
+        if(!in_array($v['N_COMP'], $arrayVentasTemp)){
+
+            $arrayVentas2[] = array(
+                "N_COMP" => $v['N_COMP'],
+                "NRO_SUCURS" => $v['NRO_SUCURS'],
+                "LOCALIDAD_SUCURSAL" => $v['LOCALIDAD_SUCURSAL'],
+                "DNI" => $v['DNI'],
+                "DNI_ORIG" => $v['DNI_ORIG'],
+                "NOMBRE_CLI" => $v['NOMBRE_CLI'],
+                "DOMICILIO" => $v['DOMICILIO'],
+                "C_POSTAL" => $v['C_POSTAL'],
+                "LOCALIDAD" => $v['LOCALIDAD'],
+                "SEXO" => $v['SEXO'],
+                "FECHA" => $v['FECHA'],
+                "E_MAIL" => $v['E_MAIL'],
+                "BANCO" => $v['BANCO'],
+                "RANGO_ETARIO" => $v['RANGO_ETARIO'],
+                "ARTICULOS" => []
+                // faltan mas datos del array, SIN ARTICULO
+            );
+
+            $arrayVentasTemp[] = $v['N_COMP'];
+        }
+    }
+
+    foreach ($arrayVentas2 as $key => $value) {
+            
+        foreach ($arrayArt as $k => $v) {
+            
+            foreach ($v as $k2 => $v2) {
+                
+                if($value['N_COMP'] == $k2){
+
+                    $arrayVentas2[$key]['ARTICULOS'][] = $v2;
+                }
+            }
+        }
+
+    }
+
+    
+
+    
+
+    // agregar ubicacion a cada venta
+
     $ventasRepository->createCollection("Ventas");
 
-    foreach ($data as $key => &$venta) {
+    foreach ($arrayVentas2 as $key => &$venta) {
         
         $venta['UBICACION'] = "";
         foreach ($ubicaciones as $k => $ubicacion) {

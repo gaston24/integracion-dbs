@@ -5,7 +5,7 @@ require_once 'vendor/autoload.php';
 // ejecutarSp();
 
 $mongo = new VentasRepository();
-ejecutarSp();
+traerDatosVentasSql();
 // $hola = ["acasa"=>"asdas"];
 // $mongo->insertOne("abc",$hola);
 

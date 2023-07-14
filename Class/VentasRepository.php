@@ -52,9 +52,8 @@ class VentasRepository
             $cidE = new Conexion();
             $conn= $cidE->conectarSql('central');
             
-            $sql = "EXEC [LAKERBIS].locales_lakers.dbo.RO_SP_MAILS_VENTA_SUCURSALES '01/07/2023', '04/07/2023'";
+            $sql = "EXEC [LAKERBIS].locales_lakers.dbo.RO_SP_MAILS_VENTA_SUCURSALES '01/07/2023', '01/07/2023'";
             
-            // ini_set('max_execution_time', 500);
             
             $stmt = sqlsrv_query($conn, $sql);
   
@@ -202,8 +201,10 @@ class VentasRepository
             if (count($newArray) == 0) {
 
                 $document['FECHA'] = (new MongoDB\BSON\UTCDateTime(strtotime($document['FECHA']->format('Y-m-d')) * 1000));
-    
-                $mongoCollection->insertOne($document);
+                if($document['E_MAIL'] != ""){
+
+                    $mongoCollection->insertOne($document);
+                }
                 return true;
             };
 
