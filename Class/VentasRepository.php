@@ -170,31 +170,33 @@ class VentasRepository
             $filter = [  "DNI" => "$dni" ]; // Filtro vacío para obtener todos los documentos
 
             $options = [
-            'projection' => []
+                'projection' => []
             ]; // Opciones adicionales, como ordenar los resultados, limitarlos, etc.
     
             $result = $mongoCollection->find($filter, $options);
 
             $newArray = [];
+
             foreach ($result as $x => $document) {
     
-            $documentArray = $document->getArrayCopy();
-    
-            // Acceder al campo _id
-            $id = (string) $documentArray['_id'];
-    
-            $newArray[$x]['ID'] = $id;
-            // Acceder a los demás campos
-            $keys = array_keys($documentArray);
-    
-            foreach ($keys as $key) {
-                // Saltar el campo _id
-                if ($key === '_id') {
-                    continue;
+                $documentArray = $document->getArrayCopy();
+        
+                // Acceder al campo _id
+                $id = (string) $documentArray['_id'];
+        
+                $newArray[$x]['ID'] = $id;
+                // Acceder a los demás campos
+                $keys = array_keys($documentArray);
+        
+                foreach ($keys as $key) {
+                    // Saltar el campo _id
+                    if ($key === '_id') {
+                        continue;
+                    }
+                    
+                    $newArray[$x][$key] = $documentArray[$key];
+        
                 }
-                $newArray[$x][$key] = $documentArray[$key];
-    
-            }
     
             }
             

@@ -23,12 +23,13 @@ class Venta
     private $rango_etario;
     private $categoria;
     private $cid_central;
+    private $cid_locales;
 
     function __construct(){
 
         require_once 'Conexion.php';
         $cid = new Conexion();
-        $this->cid_central = $cid->conectarSql('central');
+        $this->cid_locales = $cid->conectarSql('locales');
        
     } 
 
@@ -37,9 +38,13 @@ class Venta
     {
         try {
 
-            $sql = " exec [LAKERBIS].locales_lakers.dbo.$sp '2023-07-01', '2023-07-02' ";
+            $desde = date("Y-m-d", strtotime("-1 day"));
 
-            $stmt = sqlsrv_query($this->cid_central, $sql);
+            $hasta = date("Y-m-d");
+
+            $sql = "exec $sp '$desde', '$hasta'";
+
+            $stmt = sqlsrv_query($this->cid_locales, $sql);
 
             $next_result = sqlsrv_next_result($stmt);
 

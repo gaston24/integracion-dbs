@@ -188,39 +188,46 @@ function traerDatosVentasSql(){
 
     // agregar ubicacion a cada venta
 
-    $ventasRepository->createCollection("Ventas");
+    // $ventasRepository->createCollection("Ventas");
 
+    
     foreach ($arrayVentas2 as $key => &$venta) {
         
-        $venta['UBICACION'] = "";
-        foreach ($ubicaciones as $k => $ubicacion) {
-        
+        if(count($ubicaciones) > 0){
+
+            $venta['UBICACION'] = "";
             
-            if($venta['C_POSTAL'] == $ubicacion['c_postal']){
-
-                $venta['UBICACION'] = json_encode($ubicacion);
-                break ;
-            }
+            foreach ($ubicaciones as $k => $ubicacion) {
             
-            if($venta['LOCALIDAD'] == $ubicacion['localidad'] || $venta['LOCALIDAD'] == $ubicacion['desc_partido']){
-
-                $venta['UBICACION'] = json_encode($ubicacion);
-                break ;
+                
+                if($venta['C_POSTAL'] == $ubicacion['c_postal']){
+    
+                    $venta['UBICACION'] = json_encode($ubicacion);
+                    break ;
+                }
+                
+                if($venta['LOCALIDAD'] == $ubicacion['localidad'] || $venta['LOCALIDAD'] == $ubicacion['desc_partido']){
+    
+                    $venta['UBICACION'] = json_encode($ubicacion);
+                    break ;
+                }
+    
+                if($venta['LOCALIDAD_SUCURSAL'] == $ubicacion['localidad'] || $venta['LOCALIDAD_SUCURSAL'] == $ubicacion['desc_partido']){
+    
+                    $venta['UBICACION'] = json_encode($ubicacion);
+                    break ;
+                }
+    
+            
+                
             }
-
-            if($venta['LOCALIDAD_SUCURSAL'] == $ubicacion['localidad'] || $venta['LOCALIDAD_SUCURSAL'] == $ubicacion['desc_partido']){
-
-                $venta['UBICACION'] = json_encode($ubicacion);
-                break ;
-            }
-
-        
             
         }
 
-        $ventasRepository->insertOne("Ventas",$venta);
+        $ventasRepository->insertOne("Ventas", $venta);
 
     }
+
 
 
 }
